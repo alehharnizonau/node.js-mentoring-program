@@ -1,0 +1,14 @@
+{
+  "name": "node_js_course",
+  "version": "1.0.0",
+  "description": "Node.js mentoring course home tasks",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "author": "aleh_harnizonau",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
