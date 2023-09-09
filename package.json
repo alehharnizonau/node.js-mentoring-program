@@ -4,7 +4,8 @@
   "description": "Node.js mentoring course home tasks",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "task-1": "node repl.js",
+    "task-2": "node activityMonitor.js"
   },
   "author": "aleh_harnizonau",
   "license": "ISC",
