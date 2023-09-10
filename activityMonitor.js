@@ -14,17 +14,37 @@ const getSystemProcess = (system) => {
     }
 }
 
+const appendFile = async (path, data) => {
+    try {
+        await fs.promises.appendFile(path, data);
+    } catch (e) {
+        console.error("Error writing to the file:", e);
+    }
+};
+
 const main = () => {
     const system = os.platform();
     const refreshRate = 100;
+    const filePath = "activityMonitor.log";
+    const fileWritingFrequency = 60;
     try {
+        let lastWritingTime = 0;
         setInterval(() => {
             exec(getSystemProcess(system), (error, stdout) => {
                 if (error !== null) {
                     console.error(`error: ${error}`);
                 }
 
-                process.stdout.write(`${stdout.trim()}\r`);
+                const unixTime = Math.floor(new Date() / 1000);
+                const processInfo = stdout.trim();
+                const message = `${unixTime} : ${processInfo}\n`;
+
+                if (unixTime - lastWritingTime >= fileWritingFrequency) {
+                    appendFile(filePath, message);
+                    lastWritingTime = unixTime;
+                }
+
+                process.stdout.write(`${processInfo}\r`);
             })
         }, refreshRate);
 
@@ -34,6 +54,3 @@ const main = () => {
 }
 
 main();
-
-
-
