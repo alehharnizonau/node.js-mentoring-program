@@ -6,7 +6,8 @@
   "scripts": {
     "task-1": "node repl.js",
     "task-2": "node activityMonitor.js",
-    "task-3-1": "nodemon eventEmitter.js"
+    "task-3-1": "nodemon eventEmitter.js",
+    "task-3-2": "nodemon withTime.js"
   },
   "author": "aleh_harnizonau",
   "license": "ISC",

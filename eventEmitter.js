@@ -44,6 +44,8 @@ class EventEmitter {
     }
 }
 
+module.exports = EventEmitter;
+
 const myEmitter = new EventEmitter();
 
 function c1() {
