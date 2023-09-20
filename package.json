@@ -5,11 +5,17 @@
   "main": "index.js",
   "scripts": {
     "task-1": "node repl.js",
-    "task-2": "node activityMonitor.js"
+    "task-2": "node activityMonitor.js",
+    "task-3-1": "nodemon eventEmitter.js",
+    "task-3-2": "nodemon withTime.js",
+    "task-3-3": "nodemon csvToJson.js"
   },
   "author": "aleh_harnizonau",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^3.0.1"
+  },
+  "dependencies": {
+    "csvtojson": "^2.0.10"
   }
 }
