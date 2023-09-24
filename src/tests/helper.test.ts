@@ -34,7 +34,7 @@ describe('helpers', () => {
   describe('shortenPublicHoliday', () => {
     it('should return holiday in short format', () => {
       const publicHolidayParams = {
-        date: '01-01-2023',
+        date: '2023-01-01',
         localName: 'New Year',
         name: 'New Year',
         countryCode: 'BY',
@@ -46,13 +46,12 @@ describe('helpers', () => {
       }
 
       const shortenedData = {
-        date: '01-01-2023',
+        date: '2023-01-01',
         localName: 'New Year',
         name: 'New Year',
       }
 
       expect(shortenPublicHoliday({ ...publicHolidayParams })).toEqual(shortenedData);
     });
-  })
-
-})
+  });
+});
