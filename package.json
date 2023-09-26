@@ -8,14 +8,25 @@
     "task-2": "node activityMonitor.js",
     "task-3-1": "nodemon eventEmitter.js",
     "task-3-2": "nodemon withTime.js",
-    "task-3-3": "nodemon csvToJson.js"
+    "task-3-3": "nodemon csvToJson.js",
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "author": "aleh_harnizonau",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "@types/jest": "^29.5.5",
+    "@types/node": "^20.6.3",
+    "@types/supertest": "^2.0.12",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
+    "axios": "^1.5.0",
     "csvtojson": "^2.0.10"
   }
 }
