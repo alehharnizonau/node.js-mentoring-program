@@ -1,16 +1,15 @@
 const http = require('http');
-const { getUsers, getUser } = require("./controllers/userController");
-const { response } = require("./utils");
+const url = require("url");
+const { getRoute } = require("./utils/getRoute");
 
 const server = http.createServer((req, res) => {
-    if (req.url === '/api/users' && req.method === 'GET') {
-        getUsers(req, res);
-    } else if (req.url.match(/\/api\/users\/([0-9]+)/) && req.method === 'GET') {
-        const id = req.url.split('/')[3];
-        getUser(req, res, id);
-    } else {
-        response(res, { data: { message: 'Route Not Found!' }, status: 404 })
-    }
+    const parsedUrl = url.parse(req.url);
+    const path = parsedUrl.pathname;
+    const method = req.method.toUpperCase();
+    const { handler, params } = getRoute(path, method);
+    req.params = params;
+
+    handler(req, res);
 });
 
 const PORT = process.env.PORT || 4000;
