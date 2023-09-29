@@ -4,9 +4,9 @@
     "name": "Ann",
     "email": "ann@google.com",
     "hobbies": [
-      "books",
       "sport",
-      "dancing"
+      "dancing",
+      "books"
     ]
   },
   {

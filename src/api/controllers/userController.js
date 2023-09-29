@@ -63,10 +63,37 @@ const deleteUser = async (res, id) => {
     }
 };
 
+const getUserHobbies = async (res, userId) => {
+    try {
+        await User.findById(userId);
+        const hobbies = await User.getHobbies(userId);
+
+        response(res, { data: hobbies });
+    } catch (err) {
+        response(res, { data: { message: err }, status: 404 });
+    }
+}
+
+const updateUserHobby = async (req, res, userId) => {
+    try {
+        await User.findById(userId);
+        const hobbies = await User.getHobbies(userId);
+        const body = await getPostData(req);
+        const { hobby } = JSON.parse(body);
+        const updatedHobbies = await User.updateHobby(userId, hobby, hobbies, req.method);
+
+        response(res, { data: updatedHobbies });
+    } catch (err) {
+        response(res, { data: { message: err }, status: 404 });
+    }
+}
+
 module.exports = {
     getUsers,
     getUser,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    getUserHobbies,
+    updateUserHobby,
 }

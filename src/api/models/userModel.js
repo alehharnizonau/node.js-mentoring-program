@@ -37,10 +37,33 @@ const remove = (id) => new Promise((resolve, _reject) => {
     resolve();
 });
 
+const getHobbies = (userId) => new Promise((resolve, _reject) => {
+    const index = usersData.findIndex((user) => user.id === userId);
+    resolve(usersData[index].hobbies);
+});
+
+const updateHobby = (userId, hobby, hobbies, method) => new Promise((resolve, reject) => {
+    const index = usersData.findIndex((user) => user.id === userId);
+    const isHobbyExist = hobbies.includes(hobby);
+    if (isHobbyExist && method === 'PUT') {
+        reject(`User already has such hobby: ${hobby}. Please, add another one.`)
+    } else if (!isHobbyExist && method === 'DELETE') {
+        reject(`User doesn't have such hobby: ${hobby}`);
+    } else {
+        usersData[index].hobbies = method === 'PUT'
+          ? [...hobbies, hobby]
+          : hobbies.filter((userHobby) => userHobby !== hobby);
+        writeDataToFile('src/api/data/users.json', usersData);
+        resolve(usersData[index].hobbies);
+    }
+});
+
 module.exports = {
     findAll,
     findById,
     create,
     update,
-    remove
+    remove,
+    getHobbies,
+    updateHobby
 }
