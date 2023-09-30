@@ -2,7 +2,7 @@ const User = require('../models/userModel');
 const { response } = require("../utils/response");
 const { getPostData } = require("../utils/getPostData");
 
-const getUsers = async (req, res) => {
+const getUsers = async (res) => {
     try {
         const users = await User.findAll();
 
@@ -63,12 +63,23 @@ const deleteUser = async (res, id) => {
     }
 };
 
-const getUserHobbies = async (res, userId) => {
+const getUserHobbies = async (req, res, userId) => {
     try {
         await User.findById(userId);
         const hobbies = await User.getHobbies(userId);
+        const hobbiesWithLinks = {
+            hobbies, links: {
+                rel: "self",
+                href: req.url,
+            }
+        }
 
-        response(res, { data: hobbies });
+        response(res, {
+            data: hobbiesWithLinks, options: {
+                "Content-Type": "application/json",
+                "Cache-Control": "max-age=3600",
+            }
+        });
     } catch (err) {
         response(res, { data: { message: err }, status: 404 });
     }

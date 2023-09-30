@@ -11,7 +11,7 @@ const {
 const routes = {
     '/api/users': {
         GET: (req, res) => {
-            getUsers(req, res);
+            getUsers(res);
         },
         POST: (req, res) => {
             createUser(req, res);
@@ -34,7 +34,7 @@ const routes = {
     '/api/users/:id/hobbies': {
         GET: (req, res) => {
             const { id } = req.params;
-            getUserHobbies(res, id);
+            getUserHobbies(req, res, id);
         },
         PUT: (req, res) => {
             const { id } = req.params;

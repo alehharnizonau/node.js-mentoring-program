@@ -1,8 +1,8 @@
 const response = (
   res,
-  { data = {}, status = 200, contentType = "application/json" }
+  { data = {}, status = 200, options = { "Content-Type": "application/json" } }
 ) => {
-    res.writeHead(status, { "Content-Type": contentType });
+    res.writeHead(status, options);
     res.end(JSON.stringify(data));
 };
 
