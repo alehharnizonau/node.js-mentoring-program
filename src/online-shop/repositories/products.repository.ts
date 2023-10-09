@@ -12,8 +12,8 @@ export const productsRepository = {
       resolve(foundProduct)
     } else {
       reject({
-        status: HTTP_STATUSES.NotFound,
-        message: 'Product not found'
+        status: HTTP_STATUSES.BadRequest,
+        message: 'Products are not valid'
       })
     }
   })

@@ -15,6 +15,7 @@ export const getProductsRoutes = (router: Router) =>
         error: { message: err },
       });
     }
+
   })
     .get('/:productId', async (req, res) => {
       try {

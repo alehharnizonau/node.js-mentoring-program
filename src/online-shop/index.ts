@@ -1,7 +1,7 @@
-import express, { Router } from 'express';
-import { authMiddleware } from "./controllers/auth.controlller";
-import { getProductsRoutes } from "./controllers/products.controller";
-import { getCartRoutes } from "./controllers/cart.controller";
+import express, {Router} from 'express';
+import {authMiddleware} from "./controllers/auth.controller";
+import {getProductsRoutes} from "./controllers/products.controller";
+import {getCartRoutes} from "./controllers/cart.controller";
 import bodyParser from "body-parser";
 
 const app = express();
@@ -15,5 +15,5 @@ app.use('/api/profile/cart', parserMiddleware, getCartRoutes(Router()));
 const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`)
+    console.log(`App listening on port ${PORT}`)
 });
