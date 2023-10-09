@@ -2,7 +2,7 @@ import {Request, Router} from "express";
 import {HTTP_STATUSES, schema} from "../utils";
 import {cartService} from "../services/cart.service";
 import {ordersService} from "../services/orders.service";
-import {ResponseCart} from "../types";
+import {ErrorObject, ResponseCart} from "../types";
 
 interface UserRequest extends Request {
     user?: {
@@ -39,9 +39,12 @@ export const getCartRoutes = (router: Router) =>
                 const cart: ResponseCart = await cartService.updateCart(userId, body);
                 res.send({data: cart, error: null});
             } catch (err) {
-                res.status(HTTP_STATUSES.ServerError).json({
+                const {status, message} = err as ErrorObject;
+                res.status(err instanceof Error ? HTTP_STATUSES.ServerError : status).json({
                     data: null,
-                    error: {message: err},
+                    error: {
+                        message: err instanceof Error ? err.message : message,
+                    },
                 });
             }
         })

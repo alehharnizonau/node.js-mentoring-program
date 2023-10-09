@@ -30,6 +30,6 @@ export const authMiddleware = async (req: UserRequest, res: Response, next: Next
             error: {
                 message: err instanceof Error ? err.message : message,
             },
-        })
+        });
     }
 }
