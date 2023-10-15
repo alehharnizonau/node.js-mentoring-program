@@ -2,24 +2,28 @@
   "name": "node_js_course",
   "version": "1.0.0",
   "description": "Node.js mentoring course home tasks",
-  "main": "index.js",
+  "main": "src/online-shop/index.ts",
   "scripts": {
     "task-1": "node repl.js",
     "task-2": "node activityMonitor.js",
     "task-3-1": "nodemon eventEmitter.js",
     "task-3-2": "nodemon withTime.js",
     "task-3-3": "nodemon csvToJson.js",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
-    "start": "node src/api/server.js",
-    "dev": "nodemon src/api/server.js"
+    "task-4-test": "jest",
+    "task-4-test:coverage": "jest --coverage",
+    "task-5-start": "node src/api/server.js",
+    "task-5-dev": "nodemon src/api/server.js",
+    "watch": "tsc -w",
+    "dev": "nodemon dist/online-shop/index.js"
   },
   "author": "aleh_harnizonau",
   "license": "ISC",
   "devDependencies": {
+    "@types/express": "^4.17.18",
     "@types/jest": "^29.5.5",
     "@types/node": "^20.6.3",
     "@types/supertest": "^2.0.12",
+    "@types/uuid": "^9.0.4",
     "jest": "^29.7.0",
     "nodemon": "^3.0.1",
     "supertest": "^6.3.3",
@@ -29,7 +33,10 @@
   },
   "dependencies": {
     "axios": "^1.5.0",
+    "body-parser": "^1.20.2",
     "csvtojson": "^2.0.10",
+    "express": "^4.18.2",
+    "joi": "^17.11.0",
     "uuid": "^9.0.1"
   }
 }
