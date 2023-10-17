@@ -1,20 +1,21 @@
-import { ProductEntity, products } from "../models/product";
-import { HTTP_STATUSES } from "../utils";
+import {HTTP_STATUSES} from "../utils";
+import {Product} from "../entities";
+import {DI} from "../index";
 
 export const productsRepository = {
-  findAll: () => new Promise<ProductEntity[]>((resolve, _reject) => {
-    const foundProducts = products.map(product => product)
-    resolve(foundProducts);
-  }),
-  findOne: (productId: string) => new Promise<ProductEntity>((resolve, reject) => {
-    const foundProduct = products.find(product => product.id === productId)
-    if (foundProduct) {
-      resolve(foundProduct)
-    } else {
-      reject({
-        status: HTTP_STATUSES.BadRequest,
-        message: 'Products are not valid'
-      })
-    }
-  })
+    findAll: () => new Promise<Product[]>(async (resolve) => {
+        const products = await DI.productRepository.findAll();
+        resolve(products);
+    }),
+    findOne: (productId: string) => new Promise<Product>(async (resolve, reject) => {
+        const product = await DI.productRepository.findOne(productId);
+        if (product) {
+            resolve(product)
+        } else {
+            reject({
+                status: HTTP_STATUSES.BadRequest,
+                message: 'Products are not valid'
+            })
+        }
+    }),
 }

@@ -72,5 +72,4 @@ export const getCartRoutes = (router: Router) =>
                     error: {message: err},
                 });
             }
-        })
-;
+        });
