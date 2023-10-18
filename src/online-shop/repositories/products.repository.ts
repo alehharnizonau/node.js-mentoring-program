@@ -13,8 +13,8 @@ export const productsRepository = {
             resolve(product)
         } else {
             reject({
-                status: HTTP_STATUSES.BadRequest,
-                message: 'Products are not valid'
+                status: HTTP_STATUSES.NotFound,
+                message: 'No product with such id'
             })
         }
     }),

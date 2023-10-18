@@ -22,11 +22,7 @@ export const cartService = {
         count: number
     }) => {
         let cart = await cartRepository.findOne(id);
-        if (!cart) {
-            cart = await cartRepository.createOne(id);
-        }
-
-        const updatedCart = await cartRepository.update(cart, data);
+        const updatedCart = await cartRepository.update(data, cart);
         const totalPrice = updatedCart.items.reduce((acc, cur) => acc + cur.product.price * cur.count, 0);
 
         return {
