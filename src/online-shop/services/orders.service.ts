@@ -1,23 +1,20 @@
 import {cartService} from "./cart.service";
 import {HTTP_STATUSES} from "../utils";
 import {ordersRepository} from "../repositories/orders.repository";
-import {v4 as uuidv4} from "uuid";
-import {OrderEntity, OrderStatus} from "../models/order";
+import {BaseOrder, CreatedOrder} from "../types";
 
 export const ordersService = {
-    createOrder: (userId: string) => new Promise<{ order: OrderEntity }>(async (resolve, reject) => {
-        const {cart: {items, id: cartId}, total} = await cartService.getCart(userId);
-        if (!total || !items.length) {
+    createOrder: (user_id: string) => new Promise<{ order: CreatedOrder }>(async (resolve, reject) => {
+        const {cart: {items: cartItems, id: cart_id}, total: totalPrice} = await cartService.getCart(user_id);
+        if (!totalPrice || !cartItems.length) {
             reject({
                 status: HTTP_STATUSES.BadRequest,
                 message: 'Cart is empty'
             })
         } else {
-            const order: OrderEntity = {
-                id: uuidv4(),
-                userId,
-                cartId,
-                items,
+            const order: BaseOrder = {
+                cartId: cart_id,
+                items: cartItems,
                 payment: {
                     type: "paypal",
                     address: "London",
@@ -27,13 +24,36 @@ export const ordersService = {
                     type: "post",
                     address: "London"
                 },
-                comments: '',
-                status: OrderStatus.created,
-                total,
+                comments: 'test order',
+                status: 'created',
+                total: totalPrice,
             };
 
-            const createdOrder = await ordersRepository.create(order);
-            resolve({order: createdOrder});
+            const createdOrder = await ordersRepository.create(order, user_id);
+
+            const {
+                id,
+                user: {id: userId},
+                cartId,
+                items,
+                payment,
+                delivery,
+                status,
+                comments,
+                totalPrice: total
+            } = createdOrder;
+            const responseOrder = {
+                id,
+                userId,
+                cartId,
+                items,
+                payment,
+                delivery,
+                comments,
+                status,
+                total
+            }
+            resolve({order: responseOrder});
         }
     })
 }

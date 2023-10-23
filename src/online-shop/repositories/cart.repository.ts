@@ -1,55 +1,72 @@
-import {CartEntity, carts} from "../models/cart";
-import {v4 as uuidv4} from "uuid";
-import {productsRepository} from "./products.repository";
+import {Cart} from "../entities";
+import {DI} from "../index";
+import {HTTP_STATUSES} from "../utils";
 
 export const cartRepository = {
-    findOne: (id: string) => new Promise<CartEntity | undefined>((resolve) => {
-        const foundCart = carts.find((cart) => cart.userId === id && !cart.isDeleted);
-        resolve(foundCart);
-    }),
-    createOne: (id: string) => new Promise<CartEntity>((resolve, reject) => {
-        const newCart: CartEntity = {
-            id: uuidv4(),
-            userId: id,
-            isDeleted: false,
-            items: []
-        }
-        if (newCart) {
-            carts.push(newCart);
-            resolve(newCart)
-        } else {
-            reject();
+    findOne: (id: string) => new Promise<Cart | undefined | null>(async (resolve, reject) => {
+        try {
+            const user = await DI.userRepository.findOneOrFail(id);
+            const cart = await DI.cartRepository.findOne({user, isDeleted: false});
+            resolve(cart);
+        } catch (err) {
+            reject(err)
         }
     }),
-    update: (cart: CartEntity, data: {
+    createOne: (id: string) => new Promise<Cart>(async (resolve, reject) => {
+        try {
+            const user = await DI.userRepository.findOneOrFail(id);
+            const newCart = new Cart(user);
+            await DI.cartRepository.persistAndFlush(newCart);
+            if (newCart) {
+                resolve(newCart)
+            } else {
+                throw new Error("Error creating cart");
+            }
+        } catch (err) {
+            reject(err);
+        }
+    }),
+    update: (data: {
         productId: string,
         count: number
-    }) => new Promise<CartEntity>(async (resolve, reject) => {
-        const {productId, count} = data;
-        const productIndex = cart.items.findIndex((item) => item.product.id === productId);
-        if (productIndex !== -1) {
-            cart.items[productIndex].count = count;
-        } else {
-            try {
-                const product = await productsRepository.findOne(productId);
-                const cartItem = {
-                    product, count
+    }, cart?: Cart | null) => new Promise<Cart>(async (resolve, reject) => {
+            if (!cart) {
+                reject({
+                    status: HTTP_STATUSES.NotFound,
+                    message: 'Cart was not found'
+                })
+            } else {
+                const {productId, count} = data;
+                try {
+                    const product = await DI.productRepository.findOneOrFail(productId);
+                    cart.addItem(product, count);
+                    await DI.cartRepository.persistAndFlush(cart);
+                    resolve(cart);
+                } catch (err) {
+                    reject({
+                        status: HTTP_STATUSES.BadRequest,
+                        message: 'Products are not valid'
+                    });
                 }
-                cart.items.push(cartItem)
-            } catch (err) {
-                reject(err)
             }
         }
-
-        resolve(cart);
-    }),
-    remove: (id: string) => new Promise<{ success: true }>((resolve, reject) => {
-        const deletedCartIndex = carts.findIndex((cart) => cart.userId === id && !cart.isDeleted);
-        if (deletedCartIndex !== -1) {
-            carts[deletedCartIndex].isDeleted = true;
-            resolve({success: true});
-        } else {
-            reject();
+    ),
+    remove: (id: string) => new Promise<{ success: true }>(async (resolve, reject) => {
+        try {
+            const user = await DI.userRepository.findOneOrFail(id);
+            const cart = await DI.cartRepository.findOne({user, isDeleted: false});
+            if (cart) {
+                cart.isDeleted = true;
+                await DI.cartRepository.persistAndFlush(cart);
+                resolve({success: true})
+            } else {
+                reject({
+                    status: HTTP_STATUSES.NotFound,
+                    message: 'Cart was not found'
+                });
+            }
+        } catch (err) {
+            reject(err);
         }
     })
 }

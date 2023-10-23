@@ -29,10 +29,13 @@ export const getCartRoutes = (router: Router) =>
                 const {body} = req;
                 const {error} = schema.validate(body, {abortEarly: false});
                 if (error) {
-                    const message = error?.details.map((detail) => detail.message.replace(/[^\w\s]/gi, '')).toString();
+                    const details = error?.details.map((detail) => detail.message.replace(/[^\w\s]/gi, '')).toString();
                     return res.status(HTTP_STATUSES.BadRequest).json({
                         data: null,
-                        error: {message},
+                        error: {
+                            message: 'Products are not valid',
+                            details
+                        },
                     });
                 }
 
@@ -54,9 +57,12 @@ export const getCartRoutes = (router: Router) =>
                 const data = await cartService.removeCart(userId);
                 res.send({data, error: null});
             } catch (err) {
-                res.status(HTTP_STATUSES.ServerError).json({
+                const {status, message} = err as ErrorObject;
+                res.status(err instanceof Error ? HTTP_STATUSES.ServerError : status).json({
                     data: null,
-                    error: {message: err},
+                    error: {
+                        message: err instanceof Error ? err.message : message,
+                    },
                 });
             }
         })
@@ -67,10 +73,12 @@ export const getCartRoutes = (router: Router) =>
                 const order = await ordersService.createOrder(userId);
                 res.send({data: order, error: null});
             } catch (err) {
-                res.status(HTTP_STATUSES.ServerError).json({
+                const {status, message} = err as ErrorObject;
+                res.status(err instanceof Error ? HTTP_STATUSES.ServerError : status).json({
                     data: null,
-                    error: {message: err},
+                    error: {
+                        message: err instanceof Error ? err.message : message,
+                    },
                 });
             }
-        })
-;
+        });
