@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {HTTP_STATUSES} from "../utils";
-import {usersService} from "../services/users.service";
+import {usersService} from "../services";
 import {ErrorObject} from "../types";
 
 interface UserRequest extends Request {
@@ -25,6 +25,7 @@ export const authMiddleware = async (req: UserRequest, res: Response, next: Next
         next();
     } catch (err) {
         const {status, message} = err as ErrorObject;
+
         res.status(err instanceof Error ? HTTP_STATUSES.ServerError : status).json({
             data: null,
             error: {

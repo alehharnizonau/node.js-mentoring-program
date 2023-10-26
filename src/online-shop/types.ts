@@ -3,13 +3,13 @@ export type ErrorObject = {
     message: string,
 }
 
-export interface User {
-    id: string;
-    username: string;
+export interface IUser {
+    name: string;
     email: string;
+    id: string;
 }
 
-interface Product {
+export interface IProduct {
     id: string;
     title: string;
     description: string;
@@ -17,23 +17,21 @@ interface Product {
 }
 
 export interface CartItem {
-    product: Product;
+    product: IProduct;
     count: number;
 }
 
-interface Cart {
+export interface ICart {
     id: string,
     items: CartItem[]
 }
 
 export interface ResponseCart {
-    cart: Cart,
+    cart: ICart,
     total: number
 }
 
 export interface BaseOrder {
-    cartId: string;
-    items: CartItem[]
     payment: {
         type: string,
         address?: any,
@@ -43,16 +41,20 @@ export interface BaseOrder {
         type: string,
         address: any,
     },
-    comments?: string,
     status: string;
-    total: number;
+    comments?: string,
+    total: number
 }
 
-export interface Order extends BaseOrder {
-    user: User;
+export interface IOrder extends BaseOrder {
     id: string;
+    user: IUser;
+    cart: ICart;
 }
 
 export interface CreatedOrder extends BaseOrder {
+    id: string;
     userId: string;
+    cartId: string;
+    items: CartItem[]
 }

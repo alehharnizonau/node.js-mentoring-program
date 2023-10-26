@@ -15,9 +15,9 @@
     "task-5-dev": "nodemon src/api/server.js",
     "watch": "tsc -w",
     "dev": "nodemon dist/online-shop/index.js",
-    "db-init": "npx mikro-orm migration:create --initial",
-    "db-up": "npx mikro-orm migration:up",
-    "db-seed": "npx mikro-orm seeder:run "
+    "pg-db-init": "npx mikro-orm migration:create --initial",
+    "pg-db-up": "npx mikro-orm migration:up",
+    "pg-db-seed": "npx mikro-orm seeder:run "
   },
   "author": "aleh_harnizonau",
   "license": "ISC",
@@ -46,6 +46,7 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "joi": "^17.11.0",
+    "mongoose": "^7.6.3",
     "pg": "^8.11.3",
     "uuid": "^9.0.1"
   },

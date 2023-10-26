@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {productsService} from "../services/products.service";
+import {productsService} from "../services";
 import {HTTP_STATUSES} from "../utils";
 import {ErrorObject} from "../types";
 

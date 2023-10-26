@@ -1,14 +1,18 @@
-import {BaseOrder} from "../types";
-import {DI} from "../index";
-import {Order} from "../entities";
+import {BaseOrder, IOrder} from "../types";
+import {Cart, User} from "../models";
+import {Order} from "../models/order";
 
 export const ordersRepository = {
-    create: (order: BaseOrder, id: string) => new Promise<Order>(async (resolve, reject) => {
+    create: (order: BaseOrder, id: string) => new Promise<IOrder>(async (resolve, reject) => {
         try {
-            const user = await DI.userRepository.findOneOrFail(id);
-            const {cartId, items, payment, delivery, status, total, comments} = order;
-            const newOrder = new Order(user, cartId, items, payment, delivery, status, total, comments);
-            await DI.orderRepositorty.persistAndFlush(newOrder)
+            const user = await User.findById(id);
+            const cart = await Cart.findOne({user, isDeleted: false});
+            const newOrder = new Order({
+                user, cart, ...order
+            });
+
+            await newOrder.save();
+
             resolve(newOrder);
         } catch (err) {
             reject(err)

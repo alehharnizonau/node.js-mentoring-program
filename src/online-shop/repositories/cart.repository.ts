@@ -1,27 +1,31 @@
-import {Cart} from "../entities";
-import {DI} from "../index";
-import {HTTP_STATUSES} from "../utils";
+import {getUpdatedItems, HTTP_STATUSES} from "../utils";
+import {Cart, Product, User} from "../models";
+import {ICart} from "../types";
 
-export const cartRepository = {
-    findOne: (id: string) => new Promise<Cart | undefined | null>(async (resolve, reject) => {
+export const cartsRepository = {
+    findOne: (id: string) => new Promise<ICart | null>(async (resolve, reject) => {
         try {
-            const user = await DI.userRepository.findOneOrFail(id);
-            const cart = await DI.cartRepository.findOne({user, isDeleted: false});
-            resolve(cart);
+            const user = await User.findById(id);
+            const cart = await Cart.findOne({user, isDeleted: false});
+            if (cart) {
+                resolve(cart);
+            } else {
+                resolve(null);
+            }
         } catch (err) {
             reject(err)
         }
     }),
-    createOne: (id: string) => new Promise<Cart>(async (resolve, reject) => {
+    createOne: (id: string) => new Promise<ICart>(async (resolve, reject) => {
         try {
-            const user = await DI.userRepository.findOneOrFail(id);
-            const newCart = new Cart(user);
-            await DI.cartRepository.persistAndFlush(newCart);
-            if (newCart) {
-                resolve(newCart)
-            } else {
-                throw new Error("Error creating cart");
-            }
+            const user = await User.findById(id);
+            const cart = new Cart({
+                isDeleted: false,
+                items: [],
+                user,
+            });
+            await cart.save();
+            resolve(cart);
         } catch (err) {
             reject(err);
         }
@@ -29,7 +33,7 @@ export const cartRepository = {
     update: (data: {
         productId: string,
         count: number
-    }, cart?: Cart | null) => new Promise<Cart>(async (resolve, reject) => {
+    }, cart?: ICart | null) => new Promise<ICart>(async (resolve, reject) => {
             if (!cart) {
                 reject({
                     status: HTTP_STATUSES.NotFound,
@@ -38,11 +42,31 @@ export const cartRepository = {
             } else {
                 const {productId, count} = data;
                 try {
-                    const product = await DI.productRepository.findOneOrFail(productId);
-                    cart.addItem(product, count);
-                    await DI.cartRepository.persistAndFlush(cart);
-                    resolve(cart);
-                } catch (err) {
+                    const product = await Product.findById(productId);
+                    if (!product) {
+                        reject({
+                            status: HTTP_STATUSES.BadRequest,
+                            message: 'Products are not valid'
+                        });
+                    } else {
+                        const items = getUpdatedItems(cart, count, productId, product);
+                        const newCart = await Cart.findByIdAndUpdate(cart.id, {
+                            items: items.length > 0 ? items : [{
+                                product,
+                                count
+                            }]
+                        }, {returnDocument: 'after'});
+                        if (newCart) {
+                            resolve(newCart);
+                        } else {
+                            reject({
+                                status: HTTP_STATUSES.NotFound,
+                                message: 'Cart was not found'
+                            })
+                        }
+                    }
+                } catch
+                    (err) {
                     reject({
                         status: HTTP_STATUSES.BadRequest,
                         message: 'Products are not valid'
@@ -53,11 +77,9 @@ export const cartRepository = {
     ),
     remove: (id: string) => new Promise<{ success: true }>(async (resolve, reject) => {
         try {
-            const user = await DI.userRepository.findOneOrFail(id);
-            const cart = await DI.cartRepository.findOne({user, isDeleted: false});
+            const user = await User.findById(id);
+            const cart = await Cart.findOneAndUpdate({user, isDeleted: false}, {isDeleted: true});
             if (cart) {
-                cart.isDeleted = true;
-                await DI.cartRepository.persistAndFlush(cart);
                 resolve({success: true})
             } else {
                 reject({
