@@ -1,5 +1,9 @@
-import {usersRepository} from "../repositories/users.repository";
+import {usersRepository} from "../repositories";
 
 export const usersService = {
-    getUser: (id: string) => usersRepository.findById(id)
+    getUser: async (userId: string): Promise<{ id: string }> => {
+        const {id} = await usersRepository.findById(userId);
+
+        return {id}
+    }
 }

@@ -1,7 +1,6 @@
 import {Request, Router} from "express";
 import {HTTP_STATUSES, schema} from "../utils";
-import {cartService} from "../services/cart.service";
-import {ordersService} from "../services/orders.service";
+import {cartService, ordersService} from "../services";
 import {ErrorObject, ResponseCart} from "../types";
 
 interface UserRequest extends Request {
@@ -15,6 +14,7 @@ export const getCartRoutes = (router: Router) =>
         try {
             const userId = String(req.user?.id);
             const cart: ResponseCart = await cartService.getCart(userId);
+
             res.send({data: cart, error: null});
         } catch (err) {
             res.status(HTTP_STATUSES.ServerError).json({
@@ -30,6 +30,7 @@ export const getCartRoutes = (router: Router) =>
                 const {error} = schema.validate(body, {abortEarly: false});
                 if (error) {
                     const details = error?.details.map((detail) => detail.message.replace(/[^\w\s]/gi, '')).toString();
+
                     return res.status(HTTP_STATUSES.BadRequest).json({
                         data: null,
                         error: {
@@ -40,9 +41,11 @@ export const getCartRoutes = (router: Router) =>
                 }
 
                 const cart: ResponseCart = await cartService.updateCart(userId, body);
+
                 res.send({data: cart, error: null});
             } catch (err) {
                 const {status, message} = err as ErrorObject;
+
                 res.status(err instanceof Error ? HTTP_STATUSES.ServerError : status).json({
                     data: null,
                     error: {
@@ -55,9 +58,11 @@ export const getCartRoutes = (router: Router) =>
             try {
                 const userId = String(req.user?.id);
                 const data = await cartService.removeCart(userId);
+
                 res.send({data, error: null});
             } catch (err) {
                 const {status, message} = err as ErrorObject;
+
                 res.status(err instanceof Error ? HTTP_STATUSES.ServerError : status).json({
                     data: null,
                     error: {
@@ -69,11 +74,12 @@ export const getCartRoutes = (router: Router) =>
         .post('/checkout', async (req: UserRequest, res) => {
             try {
                 const userId = String(req.user?.id);
-
                 const order = await ordersService.createOrder(userId);
+
                 res.send({data: order, error: null});
             } catch (err) {
                 const {status, message} = err as ErrorObject;
+
                 res.status(err instanceof Error ? HTTP_STATUSES.ServerError : status).json({
                     data: null,
                     error: {

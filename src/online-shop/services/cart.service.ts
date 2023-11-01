@@ -1,18 +1,27 @@
-import {cartRepository} from "../repositories/cart.repository";
+import {cartsRepository, productsRepository} from "../repositories";
+import {CartItem} from "../types";
 
 export const cartService = {
     getCart: async (id: string) => {
-        let cart = await cartRepository.findOne(id);
+        let cart = await cartsRepository.findOne(id);
         let totalPrice = 0;
+        let items: CartItem[] = [];
+
         if (cart) {
-            totalPrice = cart.items.reduce((acc, cur) => acc + cur.product.price * cur.count, 0);
+            items = await Promise.all(cart.items.map(async (item) => {
+                const product = await productsRepository.findOne((item.product.id as unknown as Buffer).toString('hex'));
+                const {id, title, description, price} = product;
+                return {product: {id, title, description, price}, count: item.count}
+            }));
+            totalPrice = items.reduce((acc, cur) => acc + cur.product.price * cur.count, 0);
         } else {
-            cart = await cartRepository.createOne(id);
+            cart = await cartsRepository.createOne(id);
         }
+
         return {
             cart: {
                 id: cart.id,
-                items: cart.items,
+                items,
             },
             total: totalPrice
         }
@@ -21,17 +30,22 @@ export const cartService = {
         productId: string,
         count: number
     }) => {
-        let cart = await cartRepository.findOne(id);
-        const updatedCart = await cartRepository.update(data, cart);
-        const totalPrice = updatedCart.items.reduce((acc, cur) => acc + cur.product.price * cur.count, 0);
+        let cart = await cartsRepository.findOne(id);
+        const updatedCart = await cartsRepository.update(data, cart);
+        const items = await Promise.all(updatedCart.items.map(async (item) => {
+            const product = await productsRepository.findOne((item.product.id as unknown as Buffer).toString('hex'));
+            const {id, title, description, price} = product;
+            return {product: {id, title, description, price}, count: item.count}
+        }));
+        const totalPrice = items.reduce((acc, cur) => acc + cur.product.price * cur.count, 0);
 
         return {
             cart: {
                 id: updatedCart.id,
-                items: updatedCart.items,
+                items,
             },
             total: totalPrice
         }
     },
-    removeCart: async (userId: string) => await cartRepository.remove(userId)
+    removeCart: async (userId: string) => await cartsRepository.remove(userId)
 }
