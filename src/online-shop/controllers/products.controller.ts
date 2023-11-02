@@ -1,10 +1,10 @@
-import {Router} from "express";
+import {Request, Response, Router} from "express";
 import {productsService} from "../services";
 import {HTTP_STATUSES} from "../utils";
 import {ErrorObject} from "../types";
 
 export const getProductsRoutes = (router: Router) =>
-    router.get('/', async (req, res) => {
+    router.get('/', async (req: Request, res: Response) => {
         try {
             const products = await productsService.getProductsList();
 
@@ -17,7 +17,7 @@ export const getProductsRoutes = (router: Router) =>
         }
 
     })
-        .get('/:productId', async (req, res) => {
+        .get('/:productId', async (req: Request, res: Response) => {
             try {
                 const product = await productsService.getProduct(req.params.productId);
 

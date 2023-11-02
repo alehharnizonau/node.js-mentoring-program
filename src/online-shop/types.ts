@@ -3,10 +3,14 @@ export type ErrorObject = {
     message: string,
 }
 
-export interface IUser {
-    name: string;
-    email: string;
-    id: string;
+export interface CurrentUser {
+    id: string,
+    email: string,
+    role: string
+}
+
+export interface IUser extends CurrentUser{
+    password: string,
 }
 
 export interface IProduct {

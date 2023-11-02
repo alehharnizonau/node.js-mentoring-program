@@ -20,5 +20,26 @@ export const usersRepository = {
                 message: 'User is not authorized'
             });
         }
+    }),
+    findOne: (email: string) => new Promise<IUser | null>(async (resolve) => {
+        const user = await User.findOne({email});
+
+        resolve(user);
+    }),
+    createOne: (email: string, password: string, role: string) => new Promise<IUser>(async (resolve, reject) => {
+        const user = await User.create({
+            email,
+            password,
+            role
+        });
+
+        if (user) {
+            resolve(user)
+        } else {
+            reject({
+                status: HTTP_STATUSES.ServerError,
+                message: 'Internal Server error'
+            })
+        }
     })
 }
