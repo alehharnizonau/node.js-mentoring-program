@@ -51,7 +51,7 @@ export const getCartRoutes = (router: Router) =>
             try {
                 const data = await cartService.removeCart(req.user.id);
 
-                res.status(HTTP_STATUSES.NoContent).send({data, error: null});
+                res.send({data, error: null});
             } catch (err) {
                 const {status, message} = err as ErrorObject;
 
