@@ -7,7 +7,9 @@ export enum HTTP_STATUSES {
     NoContent = 204,
     BadRequest = 400,
     Unauthorized = 401,
+    Forbidden=403,
     NotFound = 404,
+    AlreadyExist = 409,
     ServerError = 500
 }
 

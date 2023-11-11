@@ -1,19 +1,13 @@
-import {Request, Router} from "express";
+import {Request, Response, Router} from "express";
 import {HTTP_STATUSES, schema} from "../utils";
 import {cartService, ordersService} from "../services";
 import {ErrorObject, ResponseCart} from "../types";
-
-interface UserRequest extends Request {
-    user?: {
-        id: string;
-    }
-}
+import {isAdmin} from "../middleware/isAdmin";
 
 export const getCartRoutes = (router: Router) =>
-    router.get('/', async (req: UserRequest, res) => {
+    router.get('/', async (req: Request, res: Response) => {
         try {
-            const userId = String(req.user?.id);
-            const cart: ResponseCart = await cartService.getCart(userId);
+            const cart: ResponseCart = await cartService.getCart(req.user.id);
 
             res.send({data: cart, error: null});
         } catch (err) {
@@ -23,9 +17,8 @@ export const getCartRoutes = (router: Router) =>
             });
         }
     })
-        .put('/', async (req: UserRequest, res) => {
+        .put('/', async (req: Request, res: Response) => {
             try {
-                const userId = String(req.user?.id);
                 const {body} = req;
                 const {error} = schema.validate(body, {abortEarly: false});
                 if (error) {
@@ -40,7 +33,7 @@ export const getCartRoutes = (router: Router) =>
                     });
                 }
 
-                const cart: ResponseCart = await cartService.updateCart(userId, body);
+                const cart: ResponseCart = await cartService.updateCart(req.user.id, body);
 
                 res.send({data: cart, error: null});
             } catch (err) {
@@ -54,10 +47,9 @@ export const getCartRoutes = (router: Router) =>
                 });
             }
         })
-        .delete('/', async (req: UserRequest, res) => {
+        .delete('/', isAdmin, async (req: Request, res: Response) => {
             try {
-                const userId = String(req.user?.id);
-                const data = await cartService.removeCart(userId);
+                const data = await cartService.removeCart(req.user.id);
 
                 res.send({data, error: null});
             } catch (err) {
@@ -71,10 +63,9 @@ export const getCartRoutes = (router: Router) =>
                 });
             }
         })
-        .post('/checkout', async (req: UserRequest, res) => {
+        .post('/checkout', async (req: Request, res: Response) => {
             try {
-                const userId = String(req.user?.id);
-                const order = await ordersService.createOrder(userId);
+                const order = await ordersService.createOrder(req.user.id);
 
                 res.send({data: order, error: null});
             } catch (err) {
