@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {connect} from "./config/database";
 import express, {Router} from "express";
-import {cartsController, productsController, userController} from "./controllers";
+import {cartsController, healthCheckController, productsController, userController} from "./controllers";
 import {CurrentUser} from "./types";
 import {verifyToken} from "./middleware/auth";
 
@@ -19,6 +19,7 @@ export const bootstrap = async () => {
     const app = express();
 
     app.use(express.json());
+    app.use('/health', healthCheckController(Router()));
     app.use('/api', userController(Router()));
     app.use('/api', verifyToken);
     app.use('/api/products', productsController(Router()));

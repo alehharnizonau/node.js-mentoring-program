@@ -17,13 +17,14 @@
     "pg-db-up": "npx mikro-orm migration:up",
     "pg-db-seed": "npx mikro-orm seeder:run ",
     "start": "ts-node index.ts",
-    "dev": "nodemon src/online-shop/index.ts",
+    "dev": "DEBUG=online-shop:* nodemon src/online-shop/index.ts",
     "watch": "tsc -w"
   },
   "author": "aleh_harnizonau",
   "license": "ISC",
   "devDependencies": {
     "@types/bcryptjs": "^2.4.5",
+    "@types/debug": "^4.1.12",
     "@types/express": "^4.17.18",
     "@types/jest": "^29.5.5",
     "@types/jsonwebtoken": "^9.0.4",
@@ -47,6 +48,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "csvtojson": "^2.0.10",
+    "debug": "^4.3.4",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "joi": "^17.11.0",

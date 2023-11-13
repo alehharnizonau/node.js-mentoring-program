@@ -3,13 +3,18 @@ export type ErrorObject = {
     message: string,
 }
 
+export enum DatabaseStateMessage {
+    Error = 'Error connecting to database',
+    Healthy = 'Application is healthy'
+}
+
 export interface CurrentUser {
     id: string,
     email: string,
     role: string
 }
 
-export interface IUser extends CurrentUser{
+export interface IUser extends CurrentUser {
     password: string,
 }
 
