@@ -17,8 +17,7 @@
     "emitDecoratorMetadata": true
   },
   "include": [
-    "src/online-shop/**/*.ts",
-    "tests/**/*.ts"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules",

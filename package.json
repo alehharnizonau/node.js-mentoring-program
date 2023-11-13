@@ -2,22 +2,10 @@
   "name": "node_js_course",
   "version": "1.0.0",
   "description": "Node.js mentoring course home tasks",
-  "main": "src/online-shop/index.ts",
+  "main": "src/index.ts",
   "scripts": {
-    "task-1": "node repl.js",
-    "task-2": "node activityMonitor.js",
-    "task-3-1": "nodemon eventEmitter.js",
-    "task-3-2": "nodemon withTime.js",
-    "task-3-3": "nodemon csvToJson.js",
-    "task-4-test": "jest",
-    "task-4-test:coverage": "jest --coverage",
-    "task-5-start": "node src/api/server.js",
-    "task-5-dev": "nodemon src/api/server.js",
-    "pg-db-init": "npx mikro-orm migration:create --initial",
-    "pg-db-up": "npx mikro-orm migration:up",
-    "pg-db-seed": "npx mikro-orm seeder:run ",
-    "start": "ts-node index.ts",
-    "dev": "DEBUG=online-shop:* nodemon src/online-shop/index.ts",
+    "start": "ts-node src/index.ts",
+    "dev": "DEBUG=online-shop:* nodemon src/index.ts",
     "watch": "tsc -w"
   },
   "author": "aleh_harnizonau",
@@ -40,11 +28,6 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@mikro-orm/cli": "^5.8.8",
-    "@mikro-orm/core": "^5.8.8",
-    "@mikro-orm/migrations": "^5.8.8",
-    "@mikro-orm/postgresql": "^5.8.8",
-    "@mikro-orm/seeder": "^5.8.8",
     "axios": "^1.5.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
@@ -59,12 +42,5 @@
     "pg": "^8.11.3",
     "uuid": "^9.0.1",
     "winston": "^3.11.0"
-  },
-  "mikro-orm": {
-    "useTsNode": true,
-    "configPaths": [
-      "./src/config/orm.config.ts",
-      "./dist/config/orm.config.js"
-    ]
   }
 }

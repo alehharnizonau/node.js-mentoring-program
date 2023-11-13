@@ -6,7 +6,7 @@ import net from "net";
 bootstrap().then((app: Express) => {
     const server = http.createServer(app);
     const {API_PORT} = process.env;
-    const port = API_PORT || 4000;
+    const port = API_PORT || 3000;
 
     server.listen(port, () => {
         console.log(`Server running on port ${port}`);
