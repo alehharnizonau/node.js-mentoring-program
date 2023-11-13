@@ -4,6 +4,7 @@ import * as jwt from "jsonwebtoken";
 import {HTTP_STATUSES} from "../utils";
 import {ErrorObject} from "../types";
 import {usersService} from "../services";
+import logger from "../log/logger";
 
 export const getUsersRoutes = (router: Router) =>
     router.post("/register", async (req: Request, res: Response) => {
@@ -31,11 +32,11 @@ export const getUsersRoutes = (router: Router) =>
 
             const encryptedPassword = await bcrypt.hash(password, 10);
             const user = await usersService.createUser(email.toLowerCase(), encryptedPassword, role);
-
+            logger.info(`User ${email} successfully registered`);
             res.status(HTTP_STATUSES.Created).send({data: user, error: null});
         } catch (err) {
             const {status, message} = err as ErrorObject;
-
+            logger.error("Internal Server Error");
             res.status(err instanceof Error ? HTTP_STATUSES.ServerError : status).json({
                 data: null,
                 error: {
@@ -66,7 +67,7 @@ export const getUsersRoutes = (router: Router) =>
                             expiresIn: "2h",
                         }
                     );
-
+                    logger.info(`User ${email} successfully logged in`);
                     return res.status(HTTP_STATUSES.Ok).send({data: {token}, error: null});
                 }
 
@@ -78,7 +79,7 @@ export const getUsersRoutes = (router: Router) =>
                 });
             } catch (err) {
                 const {status, message} = err as ErrorObject;
-
+                logger.error("Internal Server Error");
                 res.status(err instanceof Error ? HTTP_STATUSES.ServerError : status).json({
                     data: null,
                     error: {
