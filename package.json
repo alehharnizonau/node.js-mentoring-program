@@ -7,9 +7,10 @@
     "start": "ts-node src/index.ts",
     "dev": "DEBUG=online-shop:* nodemon src/index.ts",
     "watch": "tsc -w",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "lint": "prettier --check .",
-    "pre-commit": "npm run lint"
+    "pre-commit": "npm run lint",
+    "pre-push": "npm run test"
   },
   "author": "aleh_harnizonau",
   "license": "ISC",
