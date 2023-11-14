@@ -1,69 +1,69 @@
 export type ErrorObject = {
-    status: number,
-    message: string,
-}
+  status: number;
+  message: string;
+};
 
 export enum DatabaseStateMessage {
-    Error = 'Error connecting to database',
-    Healthy = 'Application is healthy'
+  Error = "Error connecting to database",
+  Healthy = "Application is healthy",
 }
 
 export interface CurrentUser {
-    id: string,
-    email: string,
-    role: string
+  id: string;
+  email: string;
+  role: string;
 }
 
 export interface IUser extends CurrentUser {
-    password: string,
+  password: string;
 }
 
 export interface IProduct {
-    id: string;
-    title: string;
-    description: string;
-    price: number;
+  id: string;
+  title: string;
+  description: string;
+  price: number;
 }
 
 export interface CartItem {
-    product: IProduct;
-    count: number;
+  product: IProduct;
+  count: number;
 }
 
 export interface ICart {
-    id: string,
-    items: CartItem[]
+  id: string;
+  items: CartItem[];
 }
 
 export interface ResponseCart {
-    cart: ICart,
-    total: number
+  cart: ICart;
+  total: number;
 }
 
 export interface BaseOrder {
-    payment: {
-        type: string,
-        address?: any,
-        creditCard?: any,
-    },
-    delivery: {
-        type: string,
-        address: any,
-    },
-    status: string;
-    comments?: string,
-    total: number
+  payment: {
+    type: string;
+    address?: any;
+    creditCard?: any;
+  };
+  delivery: {
+    type: string;
+    address: any;
+  };
+  status: string;
+  comments?: string;
+  total: number;
 }
 
 export interface IOrder extends BaseOrder {
-    id: string;
-    user: IUser;
-    cart: ICart;
+  id: string;
+  user: IUser;
+  cart: ICart;
 }
 
 export interface CreatedOrder extends BaseOrder {
-    id: string;
-    userId: string;
-    cartId: string;
-    items: CartItem[]
+  id: string;
+  userId: string;
+  cartId: string;
+  items: CartItem[];
 }
