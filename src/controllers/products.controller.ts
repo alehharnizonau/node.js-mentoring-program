@@ -2,12 +2,20 @@ import { Request, Response, Router } from "express";
 import { productsService } from "../services";
 import { HTTP_STATUSES } from "../utils";
 import { ErrorObject } from "../types";
+import { initProducts } from "../config/init";
 
-export const getProductsRoutes = (router: Router) =>
-  router
+export const getProductsRoutes = (router: Router) => {
+  const { NODE_ENV } = process.env;
+  return router
     .get("/", async (req: Request, res: Response) => {
       try {
-        const products = await productsService.getProductsList();
+        let products = await productsService.getProductsList();
+
+        // only for dev to init products in db if there aren't any
+        if (!products.length && NODE_ENV === "dev") {
+          await initProducts();
+          products = await productsService.getProductsList();
+        }
 
         res.send({ data: products, error: null });
       } catch (err) {
@@ -34,3 +42,4 @@ export const getProductsRoutes = (router: Router) =>
           });
       }
     });
+};
