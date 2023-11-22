@@ -2,64 +2,58 @@
   "name": "node_js_course",
   "version": "1.0.0",
   "description": "Node.js mentoring course home tasks",
-  "main": "src/online-shop/index.ts",
+  "main": "src/index.ts",
   "scripts": {
-    "task-1": "node repl.js",
-    "task-2": "node activityMonitor.js",
-    "task-3-1": "nodemon eventEmitter.js",
-    "task-3-2": "nodemon withTime.js",
-    "task-3-3": "nodemon csvToJson.js",
-    "task-4-test": "jest",
-    "task-4-test:coverage": "jest --coverage",
-    "task-5-start": "node src/api/server.js",
-    "task-5-dev": "nodemon src/api/server.js",
-    "pg-db-init": "npx mikro-orm migration:create --initial",
-    "pg-db-up": "npx mikro-orm migration:up",
-    "pg-db-seed": "npx mikro-orm seeder:run ",
-    "start": "ts-node index.ts",
-    "dev": "nodemon src/online-shop/index.ts",
-    "watch": "tsc -w"
+    "start": "ts-node src/index.ts",
+    "dev": "DEBUG=online-shop:* NODE_ENV=dev nodemon src/index.ts",
+    "watch": "tsc -w",
+    "test": "jest --passWithNoTests",
+    "lint": "prettier --check .",
+    "pre-commit": "npm run lint",
+    "pre-push": "npm run test"
   },
   "author": "aleh_harnizonau",
   "license": "ISC",
   "devDependencies": {
     "@types/bcryptjs": "^2.4.5",
+    "@types/debug": "^4.1.12",
     "@types/express": "^4.17.18",
     "@types/jest": "^29.5.5",
     "@types/jsonwebtoken": "^9.0.4",
+    "@types/morgan": "^1.9.9",
     "@types/node": "^20.6.3",
     "@types/supertest": "^2.0.12",
     "@types/uuid": "^9.0.4",
+    "husky": "^8.0.3",
     "jest": "^29.7.0",
+    "lint-staged": "^15.1.0",
     "nodemon": "^3.0.1",
+    "prettier": "^3.1.0",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@mikro-orm/cli": "^5.8.8",
-    "@mikro-orm/core": "^5.8.8",
-    "@mikro-orm/migrations": "^5.8.8",
-    "@mikro-orm/postgresql": "^5.8.8",
-    "@mikro-orm/seeder": "^5.8.8",
     "axios": "^1.5.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "csvtojson": "^2.0.10",
+    "debug": "^4.3.4",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "joi": "^17.11.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.6.3",
+    "morgan": "^1.10.0",
     "pg": "^8.11.3",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0"
   },
-  "mikro-orm": {
-    "useTsNode": true,
-    "configPaths": [
-      "./src/config/orm.config.ts",
-      "./dist/config/orm.config.js"
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,md,html,css}": [
+      "prettier --write",
+      "git add"
     ]
   }
 }
