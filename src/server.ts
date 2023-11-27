@@ -11,6 +11,7 @@ import { CurrentUser } from "./types";
 import { verifyToken } from "./middleware/auth";
 import morgan from "morgan";
 import logger from "./log/logger";
+import cors from "cors";
 
 declare global {
   namespace Express {
@@ -37,6 +38,7 @@ export const bootstrap = async () => {
     }),
   );
 
+  app.use(cors());
   app.use(express.json());
   app.use("/health", healthCheckController(Router()));
   app.use("/api", userController(Router()));
