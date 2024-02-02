@@ -1,11 +1,30 @@
-version: '3.3'
+version: "3.3"
 services:
   mongo:
-    ports:
-      - '27017:27017'
     container_name: online-shop
+    ports:
+      - "27017:27017"
     restart: always
     logging:
       options:
         max-size: 1g
-    image: mongo
+    image: mongo:latest
+    networks:
+      - online-shop-network
+  app:
+    build: .
+    container_name: online-shop-app
+    ports:
+      - "3000:3000"
+    environment:
+      APP_NAME: online-shop-app
+      API_PORT: 3000
+      MONGO_URI: mongodb://mongo:27017/online-shop
+    depends_on:
+      - mongo
+    networks:
+      - online-shop-network
+
+networks:
+  online-shop-network:
+    driver: bridge
